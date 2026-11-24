@@ -1,0 +1,32 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*/.checkpoints/
+.checkpoints/
+
+# Virtual environments & tooling
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# OS / Editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Logs & PIDs
+*.log
+*.pid
+
+# Security & Credentials (never commit Kaggle tokens or API keys)
+kaggle.json
+credentials.json
+.kaggle/
+.kaggle_hub/
+.kaggle_fleet/
