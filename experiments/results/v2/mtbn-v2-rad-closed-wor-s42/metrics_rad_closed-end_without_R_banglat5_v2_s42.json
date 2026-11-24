@@ -1,0 +1,179 @@
+{
+  "run": "rad_closed-end_without_R_banglat5_v2_s42",
+  "config": {
+    "dataset": "rad",
+    "subset": "closed-end",
+    "strategy": "without_R",
+    "model_name": "csebuetnlp/banglat5",
+    "patch_dim": 256,
+    "patch_num": 100,
+    "source_len": 512,
+    "target_len": 320,
+    "lr": 0.0001,
+    "lr_stage2": 5e-05,
+    "epochs": null,
+    "epochs_stage2": 20,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.06,
+    "label_smoothing": 0.0,
+    "max_grad_norm": 1.0,
+    "num_workers": 2,
+    "num_beams": 1,
+    "seed": 42,
+    "fp16": false,
+    "quick_run": false,
+    "protocol": "v2",
+    "val_frac": 0.1,
+    "val_max": 500,
+    "patience": null,
+    "min_epochs": null,
+    "eval_every": 1,
+    "ans_weight": null,
+    "gate_bias_init": -3.0,
+    "vision_warmup_epochs": 0,
+    "data_root": "/kaggle/input",
+    "feature_dir": "/kaggle/input/medthink-bn-features",
+    "output_dir": "/kaggle/working"
+  },
+  "metrics": {
+    "Accuracy": 57.35294117647059,
+    "Unresolved": 0.0,
+    "MajorityBaseline": 51.10294117647059,
+    "LiftOverMajority": 6.25,
+    "gate/lambda_mean": 0.07688762992620468,
+    "gate/lambda_max": 0.7002057433128357,
+    "gate/shift_from_init": 0.0294617567486379,
+    "ChoiceAccuracy": 57.35294117647059,
+    "ablation/real/ChoiceAccuracy": 57.35294117647059,
+    "ablation/zero/ChoiceAccuracy": 52.5735294117647,
+    "ablation/shuffle/ChoiceAccuracy": 47.4264705882353,
+    "ablation/shuffle_same_image_frac": 0.0
+  },
+  "train": {
+    "history": [
+      {
+        "epoch": 0,
+        "loss": 14.709299555102598,
+        "elapsed_h": 0.009545176559024387,
+        "ans_loss": 14.709299531955164,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 1,
+        "loss": 3.8110845453530837,
+        "elapsed_h": 0.020933635499742295,
+        "ans_loss": 3.811084540723597,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 2,
+        "loss": 0.5958548011710343,
+        "elapsed_h": 0.032429067028893366,
+        "ans_loss": 0.5958547994349767,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 3,
+        "loss": 0.26691170553993254,
+        "elapsed_h": 0.043930088612768384,
+        "ans_loss": 0.2669117070589829,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 4,
+        "loss": 0.226215714679181,
+        "elapsed_h": 0.05562162617842356,
+        "ans_loss": 0.22621571426325052,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 5,
+        "loss": 0.2425796275650992,
+        "elapsed_h": 0.0667743456363678,
+        "ans_loss": 0.24257962619072027,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 6,
+        "loss": 0.20887179059672703,
+        "elapsed_h": 0.07777096231778463,
+        "ans_loss": 0.2088717904158877,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 7,
+        "loss": 0.19906576733710696,
+        "elapsed_h": 0.08862016134791904,
+        "ans_loss": 0.19906576730093908,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 8,
+        "loss": 0.18813767644025167,
+        "elapsed_h": 0.09944398396544986,
+        "ans_loss": 0.1881376754818032,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 9,
+        "loss": 0.17992367119826738,
+        "elapsed_h": 0.11030397189988031,
+        "ans_loss": 0.1799236717588693,
+        "rat_loss": 0.0
+      }
+    ],
+    "epochs_completed": 10,
+    "epochs_target": 40,
+    "stopped_early": false,
+    "nan_batches": 0,
+    "nan_steps": 0,
+    "diverged": false,
+    "early_stopped": true,
+    "best_epoch": 4,
+    "best_val": 63.73626373626374,
+    "val_history": [
+      {
+        "epoch": 0,
+        "val/ChoiceAccuracy": 46.7032967032967
+      },
+      {
+        "epoch": 1,
+        "val/ChoiceAccuracy": 47.8021978021978
+      },
+      {
+        "epoch": 2,
+        "val/ChoiceAccuracy": 58.24175824175824
+      },
+      {
+        "epoch": 3,
+        "val/ChoiceAccuracy": 63.73626373626374
+      },
+      {
+        "epoch": 4,
+        "val/ChoiceAccuracy": 57.142857142857146
+      },
+      {
+        "epoch": 5,
+        "val/ChoiceAccuracy": 60.43956043956044
+      },
+      {
+        "epoch": 6,
+        "val/ChoiceAccuracy": 54.94505494505494
+      },
+      {
+        "epoch": 7,
+        "val/ChoiceAccuracy": 50.54945054945055
+      },
+      {
+        "epoch": 8,
+        "val/ChoiceAccuracy": 56.043956043956044
+      },
+      {
+        "epoch": 9,
+        "val/ChoiceAccuracy": 62.08791208791209
+      }
+    ]
+  }
+}

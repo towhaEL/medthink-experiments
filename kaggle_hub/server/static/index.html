@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaggle Hub</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2320beff'/><text x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='white'>K</text></svg>">
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></symbol>
+    <symbol id="i-login" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-import" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10.01-3-3"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 17 6-6-6-6M12 19h8"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+    <symbol id="i-gpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">K</div>
+    <div>
+      <div class="brand-name">Kaggle Hub</div>
+      <div class="brand-sub">Multi-account GPU runner</div>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="accounts"><svg class="icon"><use href="#i-users"/></svg>Accounts</button>
+    <button class="tab" data-tab="launch"><svg class="icon"><use href="#i-rocket"/></svg><span>Launch<span class="label-long"> notebook</span></span></button>
+    <button class="tab" data-tab="jobs"><svg class="icon"><use href="#i-activity"/></svg>Jobs<span id="active-jobs-count" class="count hidden">0</span></button>
+  </nav>
+
+  <div class="topbar-right">
+    <span class="pill" id="cli-pill"><span class="dot warn"></span><span id="cli-text">Checking CLI…</span></span>
+    <span class="pill" id="active-pill">Active <strong id="active-account-text">—</strong></span>
+    <button class="btn btn-ghost icon-btn" id="btn-refresh" title="Refresh everything"><svg class="icon"><use href="#i-refresh"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <!-- ============================== ACCOUNTS ============================== -->
+  <section id="tab-accounts" class="tab-pane">
+    <div class="page-head">
+      <div>
+        <h2>Accounts</h2>
+        <p>Each account runs in its own sandbox. GPU hours are tracked from jobs launched here.</p>
+      </div>
+      <div class="actions">
+        <button class="btn" data-action="import"><svg class="icon"><use href="#i-import"/></svg>Import ~/.kaggle</button>
+        <button class="btn" data-open="manual-modal"><svg class="icon"><use href="#i-plus"/></svg>Add manually</button>
+        <button class="btn btn-primary" data-open="login-modal"><svg class="icon"><use href="#i-login"/></svg>Sign in with browser</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="card stat"><div class="stat-label">Accounts</div><div class="stat-value" id="stat-accounts">0</div><div class="stat-note" id="stat-accounts-note">&nbsp;</div></div>
+      <div class="card stat"><div class="stat-label">GPU hours used · 7 days</div><div class="stat-value" id="stat-used">0</div><div class="stat-note">tracked by Kaggle Hub</div></div>
+      <div class="card stat"><div class="stat-label">GPU hours left · estimate</div><div class="stat-value" id="stat-left">0</div><div class="stat-note" id="stat-left-note">of 0 h weekly</div></div>
+      <div class="card stat"><div class="stat-label">Running now</div><div class="stat-value" id="stat-running">0</div><div class="stat-note">queued or running jobs</div></div>
+    </div>
+
+    <div id="accounts-grid" class="grid-accounts"></div>
+  </section>
+
+  <!-- =============================== LAUNCH =============================== -->
+  <section id="tab-launch" class="tab-pane hidden">
+    <div class="page-head">
+      <div>
+        <h2>Launch a notebook</h2>
+        <p>Pick a notebook, choose the account, and push it to Kaggle.</p>
+      </div>
+      <div class="actions">
+        <button class="btn" data-action="rescan"><svg class="icon"><use href="#i-refresh"/></svg>Rescan</button>
+      </div>
+    </div>
+
+    <div class="launch">
+      <div>
+        <div class="section-title">Notebooks</div>
+        <div class="nb-dir mono" id="nb-dir"></div>
+        <div id="notebooks-list" class="nb-list"></div>
+      </div>
+
+      <form id="launch-form" class="card panel form" autocomplete="off">
+        <h3><svg class="icon-lg"><use href="#i-rocket"/></svg><span id="launch-heading">Run settings</span></h3>
+
+        <div class="field">
+          <label for="f-notebook">Notebook</label>
+          <select id="f-notebook" class="input" required></select>
+        </div>
+
+        <div class="field">
+          <label for="f-account">Account</label>
+          <select id="f-account" class="input" required></select>
+          <div class="hint" id="f-account-hint">&nbsp;</div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label for="f-accel">Accelerator</label>
+            <select id="f-accel" class="input">
+              <option value="NvidiaTeslaT4" selected>GPU · T4 ×2</option>
+              <option value="NvidiaTeslaP100">GPU · P100 (retired)</option>
+              <option value="TpuV5E8">TPU v5e-8</option>
+              <option value="None">CPU only</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-maxrun">Max run time (hours)</label>
+            <input id="f-maxrun" class="input" type="number" min="0.1" max="12" step="0.5" placeholder="12 (Kaggle limit)">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-title">Kernel title</label>
+          <input id="f-title" class="input" type="text" placeholder="MedThink 02 Train Closed End">
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="f-slug">Kernel slug</label>
+            <input id="f-slug" class="input mono" type="text" placeholder="auto from notebook">
+          </div>
+          <div class="field">
+            <label for="f-datasets">Datasets</label>
+            <input id="f-datasets" class="input mono" type="text" placeholder="owner/slug, owner/slug">
+          </div>
+        </div>
+        <div class="hint" style="margin-top:-8px">Datasets must be public or shared with the selected account.</div>
+
+        <div class="switches">
+          <label class="switch">Internet access <input id="f-internet" type="checkbox" checked></label>
+          <label class="switch">Download outputs when finished <input id="f-download" type="checkbox" checked></label>
+        </div>
+
+        <div class="callout hidden" id="p100-note"><svg class="icon"><use href="#i-info"/></svg><span>P100 is retired on Kaggle; the run is placed on a replacement GPU.</span></div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="btn-launch"><svg class="icon"><use href="#i-rocket"/></svg>Push &amp; run on Kaggle</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================================ JOBS ================================ -->
+  <section id="tab-jobs" class="tab-pane hidden">
+    <div class="page-head">
+      <div>
+        <h2>Jobs</h2>
+        <p>Status is refreshed from Kaggle while a job is queued or running.</p>
+      </div>
+      <div class="actions filters">
+        <select id="jobs-filter" class="input"><option value="">All accounts</option></select>
+        <label class="toggle-line"><input type="checkbox" id="jobs-auto" checked>Auto-refresh</label>
+        <button class="btn" data-action="reload-jobs"><svg class="icon"><use href="#i-refresh"/></svg>Refresh</button>
+      </div>
+    </div>
+
+    <div class="card table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Status</th><th>Kernel</th><th>Account</th><th>Hardware</th>
+            <th>Started</th><th>Duration</th><th>Last output</th><th class="right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="jobs-body"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ MODAL: LOGIN ============================ -->
+<div id="login-modal" class="modal-bg hidden">
+  <div class="card modal">
+    <div class="modal-head">
+      <svg class="icon-lg"><use href="#i-login"/></svg><h3>Sign in with browser</h3>
+      <button class="btn btn-ghost icon-btn" data-close><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div id="login-form-view">
+        <div class="steps">
+          <div class="step"><b>1</b><span>In your browser, sign in to kaggle.com as the account you want to add.</span></div>
+          <div class="step"><b>2</b><span>Click <strong>Start sign-in</strong>. A Kaggle consent page opens in that browser.</span></div>
+          <div class="step"><b>3</b><span>Approve it. The account is saved in its own sandbox and tested.</span></div>
+        </div>
+        <div class="form">
+          <div class="field">
+            <label for="login-label">Label (optional)</label>
+            <input id="login-label" class="input" type="text" placeholder="e.g. Co-author B">
+          </div>
+          <label class="switch">Make this the active account <input id="login-active" type="checkbox"></label>
+          <div class="callout"><svg class="icon"><use href="#i-info"/></svg><span>Your current <code>~/.kaggle</code> login is not touched. An account that is already added is refused.</span></div>
+          <div class="callout"><svg class="icon"><use href="#i-info"/></svg><span><strong>Adding a second account?</strong> <em>Start sign-in</em> always uses the Kaggle user your browser is logged in to. Use <strong>Sign in with a link</strong> instead and open the link in a private window.</span></div>
+        </div>
+      </div>
+      <div id="login-link-view" class="hidden">
+        <div class="steps">
+          <div class="step"><b>1</b><span>Open the link in a <strong>private / incognito window</strong> (or another browser profile) and sign in as the account you want to add.</span></div>
+          <div class="step"><b>2</b><span>Approve the consent page. Kaggle then shows a verification code.</span></div>
+          <div class="step"><b>3</b><span>Paste the code below and click <strong>Finish</strong>. The link expires after 15 minutes.</span></div>
+        </div>
+        <div class="form">
+          <div class="field">
+            <label for="login-url">Sign-in link</label>
+            <div class="link-row">
+              <input id="login-url" class="input mono" type="text" readonly>
+              <button class="btn" id="btn-login-copy" type="button">Copy</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="login-code">Verification code</label>
+            <input id="login-code" class="input mono" type="text" autocomplete="off" spellcheck="false" placeholder="Paste the code from Kaggle">
+          </div>
+        </div>
+      </div>
+      <div id="login-wait-view" class="hidden">
+        <div class="waiting"><div class="spinner"></div><div><strong>Waiting for approval in your browser…</strong><div class="muted small">Approve the Kaggle consent page. This times out after 10 minutes.</div></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close>Cancel</button>
+      <button class="btn" id="btn-login-link">Sign in with a link</button>
+      <button class="btn btn-primary" id="btn-login-start"><svg class="icon"><use href="#i-login"/></svg>Start sign-in</button>
+      <button class="btn btn-primary hidden" id="btn-login-finish">Finish</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================== MODAL: MANUAL ADD ========================== -->
+<div id="manual-modal" class="modal-bg hidden">
+  <form class="card modal" id="manual-form" autocomplete="off">
+    <div class="modal-head">
+      <svg class="icon-lg"><use href="#i-plus"/></svg><h3>Add account manually</h3>
+      <button type="button" class="btn btn-ghost icon-btn" data-close><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="seg">
+        <button type="button" class="active" data-auth="api_key">API key (kaggle.json)</button>
+        <button type="button" data-auth="oauth_token">OAuth (credentials.json)</button>
+      </div>
+      <div class="form">
+        <div class="row-2">
+          <div class="field"><label for="m-label">Label</label><input id="m-label" class="input" type="text" placeholder="Co-author B"></div>
+          <div class="field"><label for="m-username">Kaggle username</label><input id="m-username" class="input mono" type="text" required></div>
+        </div>
+        <div class="field" id="m-key-field">
+          <label for="m-key">API key</label>
+          <input id="m-key" class="input mono" type="password" placeholder="32-character key">
+          <div class="hint">kaggle.com → Settings → API → Create New Token.</div>
+        </div>
+        <div class="field hidden" id="m-json-field">
+          <label for="m-json">credentials.json contents</label>
+          <textarea id="m-json" class="input" rows="5" placeholder='{"refresh_token": "...", "username": "..."}'></textarea>
+        </div>
+        <div class="row-2">
+          <div class="field"><label for="m-quota">Quota note</label><input id="m-quota" class="input" type="text" value="30h weekly GPU"></div>
+          <div class="field"><label for="m-notes">Notes</label><input id="m-notes" class="input" type="text"></div>
+        </div>
+        <label class="switch">Make this the active account <input id="m-active" type="checkbox"></label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn" data-close>Cancel</button>
+      <button type="submit" class="btn btn-primary">Save account</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============================= MODAL: LOGS ============================= -->
+<div id="logs-modal" class="modal-bg hidden">
+  <div class="card modal wide">
+    <div class="modal-head">
+      <svg class="icon-lg"><use href="#i-terminal"/></svg><h3>Logs</h3>
+      <span class="mono small faint" id="log-job"></span>
+      <span class="badge" id="log-status"></span>
+      <button class="btn btn-ghost icon-btn" data-close><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <pre class="logbox" id="log-content">Fetching logs…</pre>
+    </div>
+    <div class="modal-foot">
+      <span class="left" id="log-time"></span>
+      <label class="toggle-line"><input type="checkbox" id="log-follow" checked>Follow</label>
+      <button class="btn" id="btn-log-refresh"><svg class="icon"><use href="#i-refresh"/></svg>Refresh</button>
+      <button class="btn" data-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+Dataset,Strategy,Accuracy,Delta_vs_noRationale,MajorityBaseline,LiftOverMajority,MedThink_English,Delta_vs_English,RationaleROUGE1,GateLambda,Epochs
+R-RAD,w/o rationale,75.0,,51.1,23.9,79.0,-4.0,,0.081,150/150
+R-RAD,Explanation,71.69,-3.31,51.1,20.59,83.5,-11.81,30.73,0.101,150/150
+R-RAD,Reasoning,65.07,-9.93,51.1,13.97,73.9,-8.83,30.08,0.077,150/150
+R-RAD,Two-Stage,64.34,-10.66,51.1,13.24,80.5,-16.16,30.24,0.094,150/150
+R-SLAKE,w/o rationale,82.21,,56.73,25.48,82.5,-0.29,,0.09,300/300
+R-SLAKE,Explanation,73.8,-8.41,56.73,17.07,86.3,-12.5,33.79,0.082,300/300
+R-SLAKE,Reasoning,68.51,-13.7,56.73,11.78,80.8,-12.29,33.66,0.083,300/300
+R-SLAKE,Two-Stage,66.83,-15.38,56.73,10.1,79.1,-12.27,34.14,0.106,300/300
+R-Path,w/o rationale,85.05,,54.74,30.3,86.0,-0.95,,0.067,50/50
+R-Path,Explanation,80.01,-5.04,54.74,25.27,87.0,-6.99,27.97,0.054,50/50
+R-Path,Reasoning,76.14,-8.9,54.74,21.4,83.1,-6.96,27.38,0.055,50/50
+R-Path,Two-Stage,81.85,-3.19,54.74,27.11,87.2,-5.35,27.67,0.095,50/50
