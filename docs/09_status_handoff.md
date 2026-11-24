@@ -1,4 +1,4 @@
-# 09 — Status & Handoff (snapshot 2026-11-24 ~12:35)
+# 09 — Status & Handoff (snapshot 2026-11-24 ~14:15)
 
 Read this first when resuming. Full background: docs 01–08 (index in `README.md`). Latest results: doc 13 (decision gate), doc 12 (progress chart and run grids).
 
@@ -175,6 +175,12 @@ Planned fix **AARL** = segment-balanced loss (`ans_weight`) + BiomedCLIP feature
 - EN RAD (3/2 seeds): w/o-R 75.9, Expl 71.3 → Δ −4.6 (BN −5.4). Bangla amplification is not supported on RAD; wait for E5b SLAKE.
 - **New plan `pathbmc`** (Path AARL-full s42 + w/o-R + BMC s42 on mdsafiulalamsarker). Scheduler now `--plan e3b,pathsanity,e5,e3c,pathe1,e5b,pathbmc`.
 - Still running: SLAKE Expl + BMC s42, Path Expl/α=0.5 seeds, E5b.
+
+## 2026-11-24 14:15 (doc 14 §5)
+- Vanilla Expl + BMC s42: SLAKE 68.8, RAD 64.0 → the encoder does not rescue plain rationale training. Plan **`e3d`** (Expl + BMC s43, RAD + SLAKE, codegiveway) added.
+- EN 3 seeds: RAD Expl −4.3 (BN −5.4); SLAKE EN Expl s43/s44 running.
+- E5b SLAKE α=0.5 s43 moved from nishatibnatmaimuna to towhaelahi (never pushed before the move).
+- Scheduler: `--plan e3b,pathsanity,e5,e3c,pathe1,e5b,pathbmc,e3d`. Queue after the current runs: only RAD Expl + BMC s43.
 
 ## Next steps (in order, updated 2026-11-22)
 1. **When the batch finishes:** fetch, extend `analyze_v2b.py` (E3c, E5, Path), and write **doc 14**:

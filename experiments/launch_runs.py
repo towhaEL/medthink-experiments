@@ -95,7 +95,7 @@ PLANS = {
         run("sefatahmedakkhor", "slake", "without_R", 44, lang="en"),
         run("sefatahmedakkhor", "slake", "Explanation", 43, lang="en"),
         run("nishatibnatmaimuna", "slake", "Explanation", 44, lang="en"),
-        run("nishatibnatmaimuna", "slake", "Explanation", 43, lang="en", ans_weight=0.5),
+        run("towhaelahi", "slake", "Explanation", 43, lang="en", ans_weight=0.5),  # moved from nishat 11-24
         run("mdsafiulalamsarker", "slake", "Explanation", 44, lang="en", ans_weight=0.5),
     ],
     # Path + BiomedCLIP (2026-11-24): DETR Path ignores the image (zero = real). s42 first on the
@@ -103,6 +103,11 @@ PLANS = {
     "pathbmc": [
         run("mdsafiulalamsarker", "path", "Explanation", 42, ans_weight=0.5, features="biomedclip"),
         run("mdsafiulalamsarker", "path", "without_R", 42, features="biomedclip"),
+    ],
+    # Vanilla Explanation + BMC, seed 43 (s42: RAD 64.0, SLAKE 68.8 vs AARL-full 75.2 / 87.6).
+    "e3d": [
+        run("codegiveway", "slake", "Explanation", 43, features="biomedclip"),
+        run("codegiveway", "rad", "Explanation", 43, features="biomedclip"),
     ],
     # Path: pre-flight sanity, then E1 baselines + alpha=0.5 over 3 seeds (9 runs).
     "pathsanity": [run("towhaelahi", "path", "Explanation", 42, preset="sanity")],

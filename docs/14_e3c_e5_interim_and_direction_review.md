@@ -109,3 +109,28 @@ Why the two datasets split: RAD test images are 97% seen in training, so better 
 - **C4 claim:** "AARL improves accuracy" is true overall, but the parts act on different datasets. State it as a decomposition, not as one method that helps everywhere.
 - **C2 claim:** do **not** claim the harm is clearly amplified in Bangla until E5b finishes. Current evidence: harmful in both languages; similar on RAD; possibly larger in Bangla on SLAKE. A safer headline is the non-replication plus the dilution mechanism (true in both languages) plus the fix. Treat Bangla amplification as a secondary finding, conditional on E5b SLAKE.
 - **Missing baseline, now more important:** rationale dropout. Also report w/o-R + BMC as the strongest no-rationale baseline in every table.
+
+---
+
+## 5. Update 2026-11-24 14:15
+
+### In plain terms
+- **A medical encoder does not rescue plain rationale training.** Vanilla Explanation + BMC (s42): SLAKE **68.8** vs AARL-full 87.6 (p = 7e-16); RAD 64.0 vs 75.2 (p = 9e-4). BMC only pays off when the answer loss is not diluted (w/o-R + BMC 86.7, α=0.5 + BMC 87.6). This supports the dilution mechanism. Seed 43 is running (plan `e3d`).
+- **English control, more seeds:**
+
+| Δ vs w/o-R (same language) | RAD BN | RAD EN | SLAKE BN | SLAKE EN |
+|---|---|---|---|---|
+| w/o-R level | 69.0 (3) | 75.9 (3) | 78.8 (3) | 81.4 (3) |
+| Vanilla Explanation | −5.4 (3) | **−4.3** (3, p = 0.015) | −14.0 (3) | −6.6 (1) |
+| Explanation + α=0.5 | +5.9 (3) | +4.2 (2, p = 0.003) | −0.3 (3) | −0.4 (2) |
+
+  - The harm is **clear and significant in English** too. On RAD the two languages behave the same; on SLAKE the Bangla drop is about twice as large (EN Expl still 1 seed; s43/s44 running).
+  - The fix works the same way in both languages.
+  - **Implication:** the paper's main claim is that rationale supervision as practised hurts small Med-VQA models in both languages, because of answer-loss dilution. Bangla amplification is SLAKE-only so far.
+- **Path:** vanilla Explanation 73.5 ± 0.7 (2 seeds) vs w/o-R 83.0 (p = 5e-67); α=0.5 82.5 (1 seed). Path + BMC (AARL-full and w/o-R, s42) are running.
+
+### Slot use at 14:13
+- **towhaelahi:** EN RAD α=0.5 s43 + EN SLAKE α=0.5 s43 (moved here from the full nishatibnatmaimuna).
+- **codegiveway:** Path Expl s44 + SLAKE Expl + BMC s43; RAD Expl + BMC s43 queued.
+- **sefatahmedakkhor / nishatibnatmaimuna:** Path α=0.5 s43/s44 + EN SLAKE Expl s43/s44.
+- **mdsafiulalamsarker:** Path + BMC (AARL-full, w/o-R) s42.
