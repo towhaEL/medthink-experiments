@@ -1,0 +1,169 @@
+{
+  "run": "path_closed-end_without_R_banglat5_v2_s42_f197x768",
+  "config": {
+    "dataset": "path",
+    "subset": "closed-end",
+    "strategy": "without_R",
+    "model_name": "csebuetnlp/banglat5",
+    "patch_dim": 768,
+    "patch_num": 197,
+    "source_len": 512,
+    "target_len": 320,
+    "lr": 0.0001,
+    "lr_stage2": 5e-05,
+    "epochs": null,
+    "epochs_stage2": 20,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.06,
+    "label_smoothing": 0.0,
+    "max_grad_norm": 1.0,
+    "num_workers": 2,
+    "num_beams": 1,
+    "seed": 42,
+    "fp16": false,
+    "quick_run": false,
+    "protocol": "v2",
+    "val_frac": 0.1,
+    "val_max": 500,
+    "patience": null,
+    "min_epochs": null,
+    "eval_every": 1,
+    "ans_weight": null,
+    "gate_bias_init": -3.0,
+    "vision_warmup_epochs": 0,
+    "lang": "bn",
+    "data_root": "/kaggle/input",
+    "feature_dir": "/kaggle/input/medthink-bn-features",
+    "output_dir": "/kaggle/working"
+  },
+  "metrics": {
+    "Accuracy": 81.36321768498618,
+    "Unresolved": 0.0,
+    "MajorityBaseline": 54.743629106539764,
+    "LiftOverMajority": 26.619588578446418,
+    "gate/lambda_mean": 0.039197150617837906,
+    "gate/lambda_max": 0.7722325921058655,
+    "gate/shift_from_init": -0.008228722559728875,
+    "ChoiceAccuracy": 81.36321768498618,
+    "ablation/real/ChoiceAccuracy": 81.36321768498618,
+    "ablation/zero/ChoiceAccuracy": 80.68774946269573,
+    "ablation/shuffle/ChoiceAccuracy": 79.55173472520724,
+    "ablation/shuffle_same_image_frac": 0.0
+  },
+  "train": {
+    "history": [
+      {
+        "epoch": 0,
+        "loss": 4.246808376823623,
+        "elapsed_h": 0.10899933656056722,
+        "ans_loss": 4.247015790832154,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 1,
+        "loss": 0.22306140607967026,
+        "elapsed_h": 0.1712249571084976,
+        "ans_loss": 0.2228334073302754,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 2,
+        "loss": 0.1475280313993519,
+        "elapsed_h": 0.2293065379725562,
+        "ans_loss": 0.14736320926990293,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 3,
+        "loss": 0.12500515778448695,
+        "elapsed_h": 0.28738864488071864,
+        "ans_loss": 0.12482938482335265,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 4,
+        "loss": 0.11069479610208513,
+        "elapsed_h": 0.3453215859995948,
+        "ans_loss": 0.11059067615618308,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 5,
+        "loss": 0.10134794514000643,
+        "elapsed_h": 0.40283737421035765,
+        "ans_loss": 0.10121319817965242,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 6,
+        "loss": 0.09651814628352172,
+        "elapsed_h": 0.460275861620903,
+        "ans_loss": 0.0964251195552164,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 7,
+        "loss": 0.08916041588029991,
+        "elapsed_h": 0.5180920720100403,
+        "ans_loss": 0.0890827875095005,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 8,
+        "loss": 0.08590684775995727,
+        "elapsed_h": 0.5762407893604703,
+        "ans_loss": 0.08584232037480956,
+        "rat_loss": 0.0
+      }
+    ],
+    "epochs_completed": 9,
+    "epochs_target": 12,
+    "stopped_early": false,
+    "nan_batches": 0,
+    "nan_steps": 0,
+    "diverged": false,
+    "early_stopped": true,
+    "best_epoch": 4,
+    "best_val": 80.4,
+    "val_history": [
+      {
+        "epoch": 0,
+        "val/ChoiceAccuracy": 48.6
+      },
+      {
+        "epoch": 1,
+        "val/ChoiceAccuracy": 64.6
+      },
+      {
+        "epoch": 2,
+        "val/ChoiceAccuracy": 74.0
+      },
+      {
+        "epoch": 3,
+        "val/ChoiceAccuracy": 80.4
+      },
+      {
+        "epoch": 4,
+        "val/ChoiceAccuracy": 80.4
+      },
+      {
+        "epoch": 5,
+        "val/ChoiceAccuracy": 79.4
+      },
+      {
+        "epoch": 6,
+        "val/ChoiceAccuracy": 79.8
+      },
+      {
+        "epoch": 7,
+        "val/ChoiceAccuracy": 79.6
+      },
+      {
+        "epoch": 8,
+        "val/ChoiceAccuracy": 80.2
+      }
+    ]
+  }
+}

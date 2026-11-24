@@ -677,6 +677,7 @@ PROTOCOL = "v2"            # v2 (val split + early stopping) | paper (original g
 ANS_WEIGHT     = None      # e.g. 0.8 / 0.9 / 0.95 -> segment-balanced loss
 GATE_BIAS      = -3.0      # -1.0 opens the visual gate further at init
 VISION_WARMUP  = 0         # 1 -> first epoch trains the visual pathway only
+RAT_DROP       = 0.0       # 0.5 -> rationale dropout: half the training draws are answer-only
 FEATURES       = "detr"    # detr (100x256) | biomedclip (197x768, attach medthink-bn-biomedclip)
 
 # Language / backbone. E5 English control: LANG="en", MODEL="allenai/unifiedqa-t5-base",
@@ -727,6 +728,7 @@ cfg = M.Config(
     ans_weight           = ANS_WEIGHT,
     gate_bias_init       = GATE_BIAS,
     vision_warmup_epochs = VISION_WARMUP,
+    rat_drop             = RAT_DROP,
     patch_num            = FEATURE_SETS[FEATURES][1][0],
     patch_dim            = FEATURE_SETS[FEATURES][1][1],
     lang                 = LANG,
@@ -937,6 +939,7 @@ PROTOCOL = "v2"            # v2 (val split + early stopping) | paper (original g
 ANS_WEIGHT     = None      # e.g. 0.8 / 0.9 / 0.95 -> segment-balanced loss
 GATE_BIAS      = -3.0      # -1.0 opens the visual gate further at init
 VISION_WARMUP  = 0         # 1 -> first epoch trains the visual pathway only
+RAT_DROP       = 0.0       # 0.5 -> rationale dropout: half the training draws are answer-only
 FEATURES       = "detr"    # detr (100x256) | biomedclip (197x768, attach medthink-bn-biomedclip)
 
 # Language / backbone. E5 English control: LANG="en", MODEL="allenai/unifiedqa-t5-base",
@@ -976,6 +979,7 @@ cfg = M.Config(
     ans_weight           = ANS_WEIGHT,
     gate_bias_init       = GATE_BIAS,
     vision_warmup_epochs = VISION_WARMUP,
+    rat_drop             = RAT_DROP,
     patch_num            = FEATURE_SETS[FEATURES][1][0],
     patch_dim            = FEATURE_SETS[FEATURES][1][1],
     lang                 = LANG,
@@ -1397,6 +1401,7 @@ for p in paths:
         "ans_weight": c.get("ans_weight"),
         "gate_bias": c.get("gate_bias_init", -3.0),
         "vision_warmup": c.get("vision_warmup_epochs", 0),
+        "rat_drop": c.get("rat_drop", 0.0),
         "best_epoch": t.get("best_epoch"),
         "early_stopped": t.get("early_stopped", False),
     }
@@ -1407,7 +1412,7 @@ for p in paths:
 # instead of one silently replacing the other.
 # Seeds, protocols and AARL settings are part of it too -- otherwise three
 # seeds would collapse into one row.
-VARIANT = ["protocol", "ans_weight", "gate_bias", "vision_warmup"]
+VARIANT = ["protocol", "ans_weight", "gate_bias", "vision_warmup", "rat_drop"]
 df = pd.DataFrame(runs)
 df["ans_weight"] = df["ans_weight"].fillna(-1)       # NaN never equals NaN in groupby
 df = df.drop_duplicates(

@@ -1,4 +1,4 @@
-# 09 — Status & Handoff (snapshot 2026-11-24 ~14:15)
+# 09 — Status & Handoff (snapshot 2026-11-24 ~15:55)
 
 Read this first when resuming. Full background: docs 01–08 (index in `README.md`). Latest results: doc 13 (decision gate), doc 12 (progress chart and run grids).
 
@@ -181,6 +181,11 @@ Planned fix **AARL** = segment-balanced loss (`ans_weight`) + BiomedCLIP feature
 - EN 3 seeds: RAD Expl −4.3 (BN −5.4); SLAKE EN Expl s43/s44 running.
 - E5b SLAKE α=0.5 s43 moved from nishatibnatmaimuna to towhaelahi (never pushed before the move).
 - Scheduler: `--plan e3b,pathsanity,e5,e3c,pathe1,e5b,pathbmc,e3d`. Queue after the current runs: only RAD Expl + BMC s43.
+
+## 2026-11-24 15:55 (doc 14 §6, doc 08 rat_drop)
+- 10/10 slots busy: Path + BMC s43/s44 (`pathbmc2`), English Path s42 (`pathen`), Expl + BMC s43 (`e3d`), EN SLAKE α=0.5 s43.
+- **Rationale dropout implemented** (`rat_drop`, doc 08). `rdsanity` is queued on towhaelahi. **Check its log** (answer mask, `[rat_drop]` line, params, loss), then add plan `rd` (6 runs) to the scheduler.
+- Scheduler: `--plan e3b,pathsanity,e5,e3c,pathe1,e5b,pathbmc,e3d,pathbmc2,pathen,rdsanity`.
 
 ## Next steps (in order, updated 2026-11-22)
 1. **When the batch finishes:** fetch, extend `analyze_v2b.py` (E3c, E5, Path), and write **doc 14**:

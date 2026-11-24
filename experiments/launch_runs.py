@@ -49,7 +49,7 @@ STRAT_TAG = {"without_R": "wor", "Explanation": "expl", "Reasoning": "reas"}
 
 
 def run(account, dataset, strategy, seed, preset="full", prefix="mtbn-v2b", **extra):
-    """One run. `extra` may set ans_weight / gate_bias / vision_warmup / features (AARL switches),
+    """One run. `extra` may set ans_weight / gate_bias / vision_warmup / rat_drop / features (AARL switches),
     lang ("en" = E5 English control with UnifiedQA), model, lr."""
     preset = "baseline" if strategy == "without_R" and preset == "full" else preset
     return dict(account=account, dataset=dataset, strategy=strategy, seed=seed,
@@ -109,6 +109,27 @@ PLANS = {
         run("codegiveway", "slake", "Explanation", 43, features="biomedclip"),
         run("codegiveway", "rad", "Explanation", 43, features="biomedclip"),
     ],
+    # 2026-11-24 15:50: Path + BMC seeds 43/44 (final 3-seed Path table) and the English Path
+    # control (s42 first; EN/BN Path qids, images and answer indices verified identical locally).
+    "pathbmc2": [
+        run("mdsafiulalamsarker", "path", "Explanation", 43, ans_weight=0.5, features="biomedclip"),
+        run("mdsafiulalamsarker", "path", "Explanation", 44, ans_weight=0.5, features="biomedclip"),
+        run("sefatahmedakkhor", "path", "without_R", 43, features="biomedclip"),
+        run("sefatahmedakkhor", "path", "without_R", 44, features="biomedclip"),
+    ],
+    "pathen": [
+        run("nishatibnatmaimuna", "path", "without_R", 42, lang="en"),
+        run("nishatibnatmaimuna", "path", "Explanation", 42, lang="en"),
+        run("towhaelahi", "path", "Explanation", 42, lang="en", ans_weight=0.5),
+    ],
+    # Rationale-dropout baseline (doc 14): vanilla token-mean loss, 50% answer-only draws, BMC.
+    # Sanity first (towhaelahi), then RAD + SLAKE x 3 seeds.
+    "rdsanity": [run("towhaelahi", "rad", "Explanation", 42, preset="sanity",
+                     rat_drop=0.5, features="biomedclip")],
+    "rd": [run(acc, ds, "Explanation", s, rat_drop=0.5, features="biomedclip")
+           for ds, accs in (("rad", ("towhaelahi", "codegiveway", "codegiveway")),
+                            ("slake", ("sefatahmedakkhor", "nishatibnatmaimuna", "mdsafiulalamsarker")))
+           for acc, s in zip(accs, (42, 43, 44))],
     # Path: pre-flight sanity, then E1 baselines + alpha=0.5 over 3 seeds (9 runs).
     "pathsanity": [run("towhaelahi", "path", "Explanation", 42, preset="sanity")],
     "pathe1": [   # queued behind e5/e3b; 2 per account except nishatibnatmaimuna
@@ -199,6 +220,8 @@ def slug_for(r: dict) -> str:
         slug += f"-gb{abs(r['gate_bias']):g}".replace(".", "p")
     if r.get("vision_warmup"):
         slug += f"-vw{r['vision_warmup']}"
+    if r.get("rat_drop"):
+        slug += f"-rd{round(r['rat_drop'] * 100):02d}"
     if r.get("features", "detr") != "detr":
         slug += f"-{FEATURE_TAG[r['features']]}"
     if r.get("lang", "bn") != "bn":
@@ -225,6 +248,8 @@ def render_notebook(r: dict) -> Path:
         sets["GATE_BIAS     "] = repr(float(r["gate_bias"]))
     if r.get("vision_warmup"):
         sets["VISION_WARMUP "] = str(int(r["vision_warmup"]))
+    if r.get("rat_drop"):
+        sets["RAT_DROP      "] = repr(float(r["rat_drop"]))
     if r.get("features", "detr") != "detr":
         sets["FEATURES      "] = f'"{r["features"]}"'
     if r.get("lang", "bn") != "bn":

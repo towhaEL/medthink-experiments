@@ -134,3 +134,19 @@ Why the two datasets split: RAD test images are 97% seen in training, so better 
 - **codegiveway:** Path Expl s44 + SLAKE Expl + BMC s43; RAD Expl + BMC s43 queued.
 - **sefatahmedakkhor / nishatibnatmaimuna:** Path α=0.5 s43/s44 + EN SLAKE Expl s43/s44.
 - **mdsafiulalamsarker:** Path + BMC (AARL-full, w/o-R) s42.
+
+---
+
+## 6. Update 2026-11-24 15:55
+
+### Results since §5
+- **English SLAKE, 3 seeds:** vanilla Explanation 72.9 vs w/o-R 81.4 → **Δ −8.5** (p = 3e-9). Bangla: −14.0. **RAD:** EN −4.3 vs BN −5.4. So the harm is significant in both languages and larger in Bangla on SLAKE (1.6×) but not on RAD.
+- **English RAD α=0.5, 3 seeds:** 79.9 (+4.0 over EN w/o-R, p = 0.002). Bangla: +5.9. The fix transfers.
+- **Path, 3 seeds:** w/o-R 83.0, vanilla Expl 73.2 (−9.8, p = 1e-108), α=0.5 82.6 (tie, p = 0.13).
+- **Path + BMC (s42):** AARL-full 83.6, w/o-R + BMC 81.4. The image is still barely used (real − shuffled +1.6 / +1.8). BiomedCLIP does little for PathVQA closed questions, which are mostly answerable from text priors. Seeds 43/44 are running so the final table is complete.
+
+### Launched
+- **`pathbmc2`:** Path AARL-full s43/s44 and w/o-R + BMC s43/s44.
+- **`pathen`:** English Path control, s42 (w/o-R, Expl, α=0.5). The Bangla and English Path files were checked locally: every qid is present in both, and images and answer indices match exactly.
+- **`rdsanity`:** rationale-dropout sanity run (RAD, BMC, rat_drop 0.5); queued on towhaelahi.
+- **`rd`:** 6 runs (RAD + SLAKE × 3 seeds, BMC). **Launch only after the sanity log is checked.**

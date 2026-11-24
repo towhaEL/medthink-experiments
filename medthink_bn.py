@@ -242,6 +242,10 @@ class Config:
     # Freeze the text backbone for the first N epochs so the randomly
     # initialised visual pathway learns before competing with pretrained text.
     vision_warmup_epochs: int = 0
+    # Rationale dropout (baseline for the segment loss, doc 14): with this
+    # probability a training item's target is answer-only ("without_R"),
+    # resampled every time the item is drawn. Training only; Explanation only.
+    rat_drop: float = 0.0
     lang: str = "bn"                           # bn | en (E5 English control; see set_language)
 
     data_root: str = "/kaggle/input"
@@ -298,6 +302,8 @@ class Config:
             name += f"_gb{self.gate_bias_init:g}"
         if self.vision_warmup_epochs:
             name += f"_vw{self.vision_warmup_epochs}"
+        if self.rat_drop:
+            name += f"_rd{self.rat_drop:g}"
         # Non-DETR visual features (e.g. BiomedCLIP 197 x 768) get their own
         # namespace; DETR (100 x 256) names stay unchanged.
         if (self.patch_num, self.patch_dim) != (100, 256):
@@ -1003,6 +1009,7 @@ class MedThinkDataset:
         self.name_to_row = name_to_row or {}
         self.rationales = rationales or {}
         self.missing = 0
+        self.rat_drop = 0.0          # set by train_model from cfg.rat_drop, training only
         self.image_mode = "real"
         self._image_src = list(range(len(records)))
 
@@ -1058,7 +1065,11 @@ class MedThinkDataset:
         # Keyed by the globally unique id, not qid -- see record_uid().
         gen_rat = self.rationales.get(record_uid(rec), "")
         src = build_input_text(rec, self.cfg.strategy, gen_rat)
-        tgt = build_target_text(rec, self.cfg.strategy)
+        # Rationale dropout: answer-only target for this draw (input unchanged).
+        tgt_strategy = self.cfg.strategy
+        if self.rat_drop and tgt_strategy == "Explanation" and random.random() < self.rat_drop:
+            tgt_strategy = "without_R"
+        tgt = build_target_text(rec, tgt_strategy)
 
         # No padding here: the collate function pads each batch to its own
         # longest member. Padding every example to source_len=512 wasted ~89%
@@ -1086,7 +1097,7 @@ class MedThinkDataset:
             "input_ids": enc["input_ids"][0].astype(np.int64),
             "attention_mask": enc["attention_mask"][0].astype(np.int64),
             "labels": labels,
-            "ans_mask": answer_segment_mask(self.tok, rec, self.cfg.strategy, labels),
+            "ans_mask": answer_segment_mask(self.tok, rec, tgt_strategy, labels),
             "image_ids": self.image_feature(self.records[self._image_src[i]]),
             "index": i,
         }
@@ -1498,6 +1509,10 @@ def train_model(
     lr = cfg.lr if lr is None else lr
     epochs = cfg.resolved_epochs() if epochs is None else epochs
 
+    # Rationale dropout applies to training draws only; reset before returning.
+    train_ds.rat_drop = float(getattr(cfg, "rat_drop", 0.0) or 0.0)
+    if train_ds.rat_drop:
+        print(f"  [rat_drop] {train_ds.rat_drop:.0%} of training draws use an answer-only target")
     loader = DataLoader(
         train_ds, batch_size=cfg.batch_size, shuffle=True,
         collate_fn=collate_factory(train_ds.tok.pad_token_id),
@@ -1528,8 +1543,11 @@ def train_model(
         mismatch = [
             k for k in ("quick_run", "dataset", "subset", "strategy", "model_name",
                         "protocol", "seed", "ans_weight", "gate_bias_init",
-                        "vision_warmup_epochs")
+                        "vision_warmup_epochs", "rat_drop")
             if k in saved and saved[k] != getattr(cfg, k)
+        ] + [   # older checkpoints predate rat_drop: they were trained without it
+            k for k in ("rat_drop",)
+            if k not in saved and getattr(cfg, k)
         ]
         if mismatch:
             print(f"  [resume] IGNORING checkpoint -- differs in {mismatch}.")
@@ -1744,6 +1762,7 @@ def train_model(
             print(f"  [best] restored weights from epoch {es_state['best_epoch']+1} "
                   f"(val {es_state['best']:.2f})")
 
+    train_ds.rat_drop = 0.0
     return model, {
         "history": history,
         "epochs_completed": (history[-1]["epoch"] + 1) if history else 0,

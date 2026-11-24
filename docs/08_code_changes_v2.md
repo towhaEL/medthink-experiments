@@ -100,3 +100,10 @@ UnifiedQA (T5 v1.0) has genuinely tied embeddings. `load_model`'s transformers-5
 - ~~Same-pipeline English control~~ done (see above); sanity run pending
 - Rationale-length ablation (first 1–2 sentences)
 - Zero-shot VLM baseline notebook (Qwen2.5-VL-3B / MedGemma-4B)
+
+## 2026-11-24: rationale dropout (`rat_drop`)
+- **What:** `Config.rat_drop` (default 0.0). During training, each draw of an Explanation item gets an answer-only target (`without_R` target and answer mask) with this probability, resampled every epoch. The input text is unchanged. Validation/test datasets never drop (`MedThinkDataset.rat_drop` is set by `train_model` and reset before it returns).
+- **Why:** the obvious simple alternative to the segment-balanced loss (doc 04 lists it as a required baseline). It uses the vanilla token-mean loss, so it tests "fewer rationale tokens" against "per-segment normalisation".
+- **Naming:** run name `_rd0.5`; slug `-rd50`; notebook switch `RAT_DROP`; the checkpoint resume check includes `rat_drop`. Default runs keep their names.
+- **Where:** `medthink_bn.py` (Config, run_name, MedThinkDataset.__getitem__, train_model), `build_notebooks.py` (both training templates + results table), `experiments/launch_runs.py` (slug, render, plans `rdsanity` / `rd`). Pre-change copies: `backup/pre_ratdrop/`.
+- **Checked locally** (stub tokenizer): ~49% of draws are answer-only, the answer-only target equals the `without_R` target, inputs are identical, eval and `without_R` are unaffected.
