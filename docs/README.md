@@ -14,6 +14,7 @@ Constraints given: Kaggle T4/P100 only; dataset LLM-translated and fully human-c
 | [07_timeline_and_paper_outline.md](07_timeline_and_paper_outline.md) | Week-by-week plan, decision gate, target journals, paper outline |
 | [13_v2b_decision_gate.md](13_v2b_decision_gate.md) | **Decision gate passed (3 seeds):** α=0.5 segment loss: RAD +5.9 over w/o-R (p=6e-5), SLAKE tie (−0.3, p=0.82); vanilla Explanation −5 / −14 |
 | [14_e3c_e5_interim_and_direction_review.md](14_e3c_e5_interim_and_direction_review.md) | **AARL-full (α=0.5 + BiomedCLIP), 3 seeds:** SLAKE 87.6 (+8.8 over w/o-R), RAD 75.2 (+6.2). English control: vanilla rationales hurt in EN too, 2.5–3× less → **reframe C2**; direction review and missing baselines |
+| [15_research_proposal.md](15_research_proposal.md) | **Current research proposal (start here):** goal, research questions, hypotheses vs evidence, revised contributions, baseline vs improved pipeline, main results, all experiments with progress, plan to submission, risks, open decisions |
 | [12_experiment_progress.md](12_experiment_progress.md) | **Progress chart:** every experiment, run grids incl. E3 BiomedCLIP (SLAKE 88.5 vs 77.9) and E5 English control, critical path (updated 2026-11-22 18:25) |
 | [11_v2b_interim_results.md](11_v2b_interim_results.md) | **v2b results (interim):** protocol fixed; SLAKE −13 pts from rationales; α=0.5 segment loss closes the gap (1 seed) |
 | [10_v2_week1_sanity.md](10_v2_week1_sanity.md) | Week-1 sanity check: v2 early stopping undertrained runs → protocol changed to v2b |

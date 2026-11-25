@@ -1,0 +1,202 @@
+{
+  "run": "path_closed-end_without_R_unifiedqa-t5-base_v2_s42_en",
+  "config": {
+    "dataset": "path",
+    "subset": "closed-end",
+    "strategy": "without_R",
+    "model_name": "allenai/unifiedqa-t5-base",
+    "patch_dim": 256,
+    "patch_num": 100,
+    "source_len": 512,
+    "target_len": 320,
+    "lr": 0.0001,
+    "lr_stage2": 5e-05,
+    "epochs": null,
+    "epochs_stage2": 20,
+    "batch_size": 8,
+    "grad_accum": 4,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.06,
+    "label_smoothing": 0.0,
+    "max_grad_norm": 1.0,
+    "num_workers": 2,
+    "num_beams": 1,
+    "seed": 42,
+    "fp16": false,
+    "quick_run": false,
+    "protocol": "v2",
+    "val_frac": 0.1,
+    "val_max": 500,
+    "patience": null,
+    "min_epochs": null,
+    "eval_every": 1,
+    "ans_weight": null,
+    "gate_bias_init": -3.0,
+    "vision_warmup_epochs": 0,
+    "lang": "en",
+    "data_root": "/kaggle/input",
+    "feature_dir": "/kaggle/input/medthink-bn-features",
+    "output_dir": "/kaggle/working"
+  },
+  "metrics": {
+    "Accuracy": 87.9950875038379,
+    "Unresolved": 0.0,
+    "MajorityBaseline": 54.743629106539764,
+    "LiftOverMajority": 33.25145839729813,
+    "gate/lambda_mean": 0.047752175480127335,
+    "gate/lambda_max": 0.5770266652107239,
+    "gate/shift_from_init": 0.00032630230256055354,
+    "ChoiceAccuracy": 87.9950875038379,
+    "ablation/real/ChoiceAccuracy": 87.9950875038379,
+    "ablation/zero/ChoiceAccuracy": 87.41172858458704,
+    "ablation/shuffle/ChoiceAccuracy": 87.74946269573226,
+    "ablation/shuffle_same_image_frac": 0.0
+  },
+  "train": {
+    "history": [
+      {
+        "epoch": 0,
+        "loss": 0.7798268997226545,
+        "elapsed_h": 0.05342777417765723,
+        "ans_loss": 0.7798268960905755,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 1,
+        "loss": 0.08475529533523381,
+        "elapsed_h": 0.10448821498288048,
+        "ans_loss": 0.08475529569405763,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 2,
+        "loss": 0.06985895066200958,
+        "elapsed_h": 0.15523376802603403,
+        "ans_loss": 0.0698589513018495,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 3,
+        "loss": 0.05952988956825637,
+        "elapsed_h": 0.20590905335214402,
+        "ans_loss": 0.059529889933103375,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 4,
+        "loss": 0.05183492086565006,
+        "elapsed_h": 0.2562877827220493,
+        "ans_loss": 0.051834921302281574,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 5,
+        "loss": 0.04286398511236956,
+        "elapsed_h": 0.30708886702855426,
+        "ans_loss": 0.042863985513997484,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 6,
+        "loss": 0.03710884167979266,
+        "elapsed_h": 0.3577536888917287,
+        "ans_loss": 0.03710884174029604,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 7,
+        "loss": 0.033891967926127996,
+        "elapsed_h": 0.40864518503348035,
+        "ans_loss": 0.03389196808416253,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 8,
+        "loss": 0.030292081698807247,
+        "elapsed_h": 0.45964442908763886,
+        "ans_loss": 0.03029208193543478,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 9,
+        "loss": 0.02614183067445863,
+        "elapsed_h": 0.5100552823808459,
+        "ans_loss": 0.026141830764968396,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 10,
+        "loss": 0.02629432813299907,
+        "elapsed_h": 0.5605211521519555,
+        "ans_loss": 0.026294328137983547,
+        "rat_loss": 0.0
+      },
+      {
+        "epoch": 11,
+        "loss": 0.024109622819134275,
+        "elapsed_h": 0.6109376034471724,
+        "ans_loss": 0.024109623001630096,
+        "rat_loss": 0.0
+      }
+    ],
+    "epochs_completed": 12,
+    "epochs_target": 12,
+    "stopped_early": false,
+    "nan_batches": 0,
+    "nan_steps": 0,
+    "diverged": false,
+    "early_stopped": false,
+    "best_epoch": 8,
+    "best_val": 88.6,
+    "val_history": [
+      {
+        "epoch": 0,
+        "val/ChoiceAccuracy": 83.4
+      },
+      {
+        "epoch": 1,
+        "val/ChoiceAccuracy": 84.8
+      },
+      {
+        "epoch": 2,
+        "val/ChoiceAccuracy": 87.2
+      },
+      {
+        "epoch": 3,
+        "val/ChoiceAccuracy": 83.0
+      },
+      {
+        "epoch": 4,
+        "val/ChoiceAccuracy": 87.8
+      },
+      {
+        "epoch": 5,
+        "val/ChoiceAccuracy": 88.0
+      },
+      {
+        "epoch": 6,
+        "val/ChoiceAccuracy": 88.2
+      },
+      {
+        "epoch": 7,
+        "val/ChoiceAccuracy": 88.6
+      },
+      {
+        "epoch": 8,
+        "val/ChoiceAccuracy": 88.6
+      },
+      {
+        "epoch": 9,
+        "val/ChoiceAccuracy": 87.6
+      },
+      {
+        "epoch": 10,
+        "val/ChoiceAccuracy": 88.4
+      },
+      {
+        "epoch": 11,
+        "val/ChoiceAccuracy": 88.0
+      }
+    ]
+  }
+}

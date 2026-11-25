@@ -1559,3 +1559,178 @@ print("wrote all_results.csv and all_results.md")
 write("05_results_report.ipynb", nb05)
 
 print("\nAll notebooks generated in", OUT)
+
+
+# --------------------------------------------------------------------------- #
+# 06 - E6 zero-shot VLM baseline (inference only)
+# --------------------------------------------------------------------------- #
+
+nb06 = notebook([
+    md("""
+# 06 · E6 — Zero-shot VLM baseline (closed-end)
+
+Scores an instruction-tuned VLM (default **Qwen2.5-VL-3B-Instruct**) on the
+closed-end test split **without any training**, with Bangla or English prompts.
+
+- **Choice scoring (primary):** log-likelihood of each option as the assistant's
+  reply; the best-scoring option is the prediction. Same idea as our models'
+  `ChoiceAccuracy`, so the numbers are comparable and parsing failures are impossible.
+- **Generation (secondary):** greedy decoding, matched to an option after
+  normalisation; unmatched outputs are counted as `Unresolved`.
+- Output: `metrics_zs_*.json` + `preds_zs_*.jsonl` with the same `qid / image_key /
+  pred_answer / gold_answer` fields as the training runs, so
+  `experiments/analyze_*.py` can pair them for McNemar tests.
+
+Attach: `towhaelahi/medthink-bn-manifests`, `towhaelahi/medthink-dataset`
+(images + English JSONs). Internet on (model download).
+"""),
+    code("""
+# ---- config (launch_runs.py rewrites these lines) ----
+VLM      = "Qwen/Qwen2.5-VL-3B-Instruct"
+DATASET  = "rad"           # rad | slake | path
+LANG     = "bn"            # bn | en (prompt + question/options language)
+MAX_N    = None            # None = full test split; an int subsamples (seed 0)
+DTYPE    = "float16"       # float16 | bfloat16 (T4 has no native bf16)
+MAX_PIX  = 512 * 28 * 28   # cap on image pixels (Qwen merges 28x28 patches)
+"""),
+    LIB_CELL,
+    code(SETUP + """
+import torch, re
+from PIL import Image, ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("device:", DEVICE, "|", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "")
+import transformers; print("transformers", transformers.__version__)
+"""),
+    code(LOADER),
+    md("## 1 · Test records and images"),
+    code("""
+M.set_language(LANG)
+recs = load_manifest(DATASET, "closed-end", "test")
+recs = M.overlay_language(recs, DATA_ROOT, LANG, DATASET, "closed-end", "test")
+recs = subsample(recs, MAX_N, seed=0)
+
+img_index = M.build_image_index([DATA_ROOT])
+def image_path(r):
+    p = r.get("image_path")
+    return p if p and os.path.exists(p) else M.resolve_image(r["image_key"], img_index)
+paths = [image_path(r) for r in recs]
+missing = sum(p is None for p in paths)
+print(f"{len(recs)} test records | missing images: {missing}")
+assert missing == 0, "unresolved images - attach towhaelahi/medthink-dataset"
+assert all(r.get("options") for r in recs), "closed-end records need options"
+print("example:", recs[0]["question"], recs[0]["options"], "->", recs[0]["answer"])
+"""),
+    md("## 2 · Model"),
+    code("""
+from transformers import AutoProcessor
+try:
+    from transformers import Qwen2_5_VLForConditionalGeneration as VLMClass
+except ImportError:
+    from transformers import AutoModelForImageTextToText as VLMClass
+
+dtype = getattr(torch, DTYPE)
+model = VLMClass.from_pretrained(VLM, torch_dtype=dtype, attn_implementation="sdpa").to(DEVICE).eval()
+processor = AutoProcessor.from_pretrained(VLM, min_pixels=64 * 28 * 28, max_pixels=MAX_PIX)
+tok = processor.tokenizer
+tok.padding_side = "right"
+print("params: %.2fB" % (sum(p.numel() for p in model.parameters()) / 1e9))
+
+PROMPT = {
+    "bn": ("নিচের মেডিকেল ছবিটি দেখে প্রশ্নের উত্তর দিন। "
+           "শুধুমাত্র প্রদত্ত বিকল্পগুলোর একটি হুবহু লিখুন, অন্য কিছু নয়।\\n"
+           "প্রশ্ন: {q}\\nবিকল্প: {opts}"),
+    "en": ("Look at the medical image and answer the question. "
+           "Reply with exactly one of the given options and nothing else.\\n"
+           "Question: {q}\\nOptions: {opts}"),
+}[LANG]
+
+def prefix_text(r):
+    msgs = [{"role": "user", "content": [
+        {"type": "image"},
+        {"type": "text", "text": PROMPT.format(q=r["question"], opts=" / ".join(r["options"]))}]}]
+    return processor.apply_chat_template(msgs, add_generation_prompt=True, tokenize=False)
+
+END = "<|im_end|>"
+"""),
+    md("## 3 · Choice scoring + generation"),
+    code("""
+@torch.no_grad()
+def score_options(img, prefix, options):
+    # Sum of log-probs of each option (+ end-of-turn) after the prompt.
+    pre_ids = processor(text=[prefix], images=[img], return_tensors="pt")["input_ids"][0]
+    n_pre = len(pre_ids)
+    texts = [prefix + o + END for o in options]
+    enc = processor(text=texts, images=[img] * len(options), return_tensors="pt", padding=True).to(DEVICE)
+    # The reply must not merge with the prompt's last token, or scores are misaligned.
+    assert (enc["input_ids"][:, :n_pre].cpu() == pre_ids).all(), "prompt/option token boundary moved"
+    logits = model(**enc).logits.float()
+    logp = torch.log_softmax(logits[:, :-1], -1)
+    ids = enc["input_ids"][:, 1:]
+    mask = enc["attention_mask"][:, 1:].clone()
+    mask[:, : n_pre - 1] = 0                      # score only the reply tokens
+    tok_lp = logp.gather(-1, ids.unsqueeze(-1)).squeeze(-1) * mask
+    s = tok_lp.sum(1)
+    if not torch.isfinite(s).all():
+        raise FloatingPointError("non-finite scores - try DTYPE='bfloat16'")
+    return s.cpu().tolist()
+
+@torch.no_grad()
+def generate(img, prefix):
+    enc = processor(text=[prefix], images=[img], return_tensors="pt").to(DEVICE)
+    out = model.generate(**enc, max_new_tokens=16, do_sample=False)
+    return tok.decode(out[0, enc["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+
+def match_option(text, options):
+    t = M.bn_normalize(text).strip().strip(".।!").lower()
+    norm = [M.bn_normalize(o).lower() for o in options]
+    if t in norm:
+        return options[norm.index(t)]
+    hits = [o for o, n in zip(options, norm) if re.search(r"(^|\\W)" + re.escape(n) + r"(\\W|$)", t)]
+    return hits[0] if len(hits) == 1 else None
+
+preds, t0 = [], time.time()
+for i, (r, p) in enumerate(zip(recs, paths)):
+    img = Image.open(p).convert("RGB")
+    pre = prefix_text(r)
+    scores = score_options(img, pre, r["options"])
+    choice = r["options"][int(np.argmax(scores))]
+    gen = generate(img, pre)
+    preds.append({"qid": r["qid"], "image_key": r["image_key"], "question": r["question"],
+                  "options": r["options"], "gold_answer": r["answer"], "pred_answer": choice,
+                  "scores": scores, "generated": gen, "gen_answer": match_option(gen, r["options"]),
+                  "content_type": r.get("content_type"), "organ": r.get("organ")})
+    if i < 3 or (i + 1) % 100 == 0:
+        el = time.time() - t0
+        print(f"  {i+1}/{len(recs)}  {el/(i+1):.2f}s/item  gen={gen!r} choice={choice!r} gold={r['answer']!r}")
+print(f"done in {(time.time()-t0)/60:.1f} min")
+"""),
+    md("## 4 · Metrics and save"),
+    code("""
+from collections import Counter
+n = len(preds)
+acc = 100 * sum(p["pred_answer"] == p["gold_answer"] for p in preds) / n
+gen_ok = 100 * sum(p["gen_answer"] == p["gold_answer"] for p in preds) / n
+unres = 100 * sum(p["gen_answer"] is None for p in preds) / n
+maj = Counter(p["gold_answer"] for p in preds).most_common(1)[0]
+pred_dist = Counter(p["pred_answer"] for p in preds).most_common(5)
+metrics = {"ChoiceAccuracy": round(acc, 2), "Accuracy": round(acc, 2),
+           "GenAccuracy": round(gen_ok, 2), "GenUnresolved": round(unres, 2),
+           "MajorityBaseline": round(100 * maj[1] / n, 2), "N": n}
+print(json.dumps(metrics, indent=1))
+print("prediction distribution:", pred_dist)
+
+tag = VLM.split("/")[-1]
+name = f"zs_{tag}_{DATASET}_closed-end_{LANG}" + (f"_n{MAX_N}" if MAX_N else "")
+with open(Path(WORK) / f"metrics_{name}.json", "w", encoding="utf-8") as fh:
+    json.dump({"run": name, "config": {"vlm": VLM, "dataset": DATASET, "lang": LANG, "max_n": MAX_N,
+               "dtype": DTYPE, "max_pixels": MAX_PIX, "prompt": PROMPT},
+               "metrics": metrics}, fh, ensure_ascii=False, indent=1)
+with open(Path(WORK) / f"preds_{name}.jsonl", "w", encoding="utf-8") as fh:
+    for p in preds:
+        fh.write(json.dumps(p, ensure_ascii=False) + "\\n")
+print("saved", name)
+"""),
+])
+
+write("06_zero_shot_vlm.ipynb", nb06)

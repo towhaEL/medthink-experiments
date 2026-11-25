@@ -37,6 +37,9 @@ from kaggle_fleet.kaggle_runner import KaggleRunner        # noqa: E402
 from kaggle_fleet.models import JobStatus, RunOptions      # noqa: E402
 
 TEMPLATE = ROOT / "notebooks" / "02_train_closed_end.ipynb"
+ZS_TEMPLATE = ROOT / "notebooks" / "06_zero_shot_vlm.ipynb"     # E6 zero-shot VLM
+ZS_DATASETS = ["towhaelahi/medthink-bn-manifests", "towhaelahi/medthink-dataset"]
+ZS_TAG = {"Qwen/Qwen2.5-VL-3B-Instruct": "qwen3b", "google/medgemma-4b-it": "medgemma4b"}
 OUT_DIR = ROOT / "experiments" / "generated"
 DATASETS = ["towhaelahi/medthink-bn-features", "towhaelahi/medthink-bn-manifests"]
 # Extra Kaggle dataset per non-default visual feature set (nb 01b output).
@@ -54,6 +57,12 @@ def run(account, dataset, strategy, seed, preset="full", prefix="mtbn-v2b", **ex
     preset = "baseline" if strategy == "without_R" and preset == "full" else preset
     return dict(account=account, dataset=dataset, strategy=strategy, seed=seed,
                 preset=preset, prefix=prefix, **extra)
+
+
+def zs(account, dataset, lang, vlm="Qwen/Qwen2.5-VL-3B-Instruct", max_n=None):
+    """One E6 zero-shot evaluation (notebook 06, inference only)."""
+    return dict(kind="zs", account=account, dataset=dataset, lang=lang, vlm=vlm, max_n=max_n,
+                preset="zs", strategy="zs", seed=0)
 
 
 def e1(prefix):
@@ -130,6 +139,10 @@ PLANS = {
            for ds, accs in (("rad", ("towhaelahi", "codegiveway", "codegiveway")),
                             ("slake", ("sefatahmedakkhor", "nishatibnatmaimuna", "mdsafiulalamsarker")))
            for acc, s in zip(accs, (42, 43, 44))],
+    # E6 zero-shot VLM (notebook 06): sanity on 40 RAD items, then 3 datasets x {bn, en}.
+    "zssanity": [zs("sefatahmedakkhor", "rad", "bn", max_n=40)],
+    "zs": [zs(acc, ds, lang) for ds, acc in (("rad", "sefatahmedakkhor"), ("slake", "towhaelahi"),
+                                              ("path", "codegiveway")) for lang in ("bn", "en")],
     # Path: pre-flight sanity, then E1 baselines + alpha=0.5 over 3 seeds (9 runs).
     "pathsanity": [run("towhaelahi", "path", "Explanation", 42, preset="sanity")],
     "pathe1": [   # queued behind e5/e3b; 2 per account except nishatibnatmaimuna
@@ -212,6 +225,9 @@ PLANS = {
 
 
 def slug_for(r: dict) -> str:
+    if r.get("kind") == "zs":
+        return (f"mtbn-zs-{ZS_TAG[r['vlm']]}-{r['dataset']}-closed-{r['lang']}"
+                + (f"-n{r['max_n']}" if r.get("max_n") else ""))
     tag = "sanity" if r["preset"] == "sanity" else STRAT_TAG[r["strategy"]]
     slug = f"{r.get('prefix', 'mtbn-v2b')}-{r['dataset']}-closed-{tag}-s{r['seed']}"
     if r.get("ans_weight") is not None:
@@ -232,6 +248,15 @@ def slug_for(r: dict) -> str:
 
 
 def render_notebook(r: dict) -> Path:
+    if r.get("kind") == "zs":
+        nb = json.loads(ZS_TEMPLATE.read_text(encoding="utf-8"))
+        cell = next(c for c in nb["cells"] if "VLM      =" in "".join(c["source"]))
+        src = "".join(cell["source"])
+        sets = {"VLM     ": f'"{r["vlm"]}"', "DATASET ": f'"{r["dataset"]}"',
+                "LANG    ": f'"{r["lang"]}"', "MAX_N   ": repr(r.get("max_n"))}
+        if r.get("dtype"):
+            sets["DTYPE   "] = f'"{r["dtype"]}"'
+        return _fill(nb, cell, src, sets, r)
     nb = json.loads(TEMPLATE.read_text(encoding="utf-8"))
     cell = next(c for c in nb["cells"] if "PRESET   =" in "".join(c["source"]))
     src = "".join(cell["source"])
@@ -257,6 +282,10 @@ def render_notebook(r: dict) -> Path:
         sets["MODEL         "] = f'"{r.get("model") or LANG_MODEL[r["lang"]]}"'
     if r.get("lr") is not None:
         sets["LR            "] = repr(float(r["lr"]))
+    return _fill(nb, cell, src, sets, r)
+
+
+def _fill(nb: dict, cell: dict, src: str, sets: dict, r: dict) -> Path:
     for name, value in sets.items():
         src, n = re.subn(rf"^{name} = \S+", f"{name} = {value}", src, count=1, flags=re.M)
         if n != 1:
@@ -275,9 +304,10 @@ def push(runner: KaggleRunner, r: dict):
         notebook=str(nb), account_id=r["account"], slug=slug,
         title=slug.replace("-", " "),             # title must slugify back to the id
         accelerator="NvidiaTeslaT4", enable_gpu=True, enable_internet=True,
-        dataset_sources=DATASETS
-        + ([FEATURE_DATASETS[r["features"]]] if r.get("features", "detr") != "detr" else [])
-        + ([LANG_DATASET[r["lang"]]] if r.get("lang", "bn") != "bn" else []),
+        dataset_sources=(ZS_DATASETS if r.get("kind") == "zs" else (
+            DATASETS
+            + ([FEATURE_DATASETS[r["features"]]] if r.get("features", "detr") != "detr" else [])
+            + ([LANG_DATASET[r["lang"]]] if r.get("lang", "bn") != "bn" else []))),
     ))
     return runner.push_job(job.id)
 
